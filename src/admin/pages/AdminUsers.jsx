@@ -11,7 +11,7 @@ export default function AdminUsers() {
       { key: 'last_name', label: 'Last name' },
       { key: 'email', label: 'Email' },
       { key: 'is_active', label: 'Active' },
-      { key: 'last_login', label: 'Last sign-in', render: (row) => (row.last_login ? new Date(row.last_login).toLocaleDateString() : 'Never') },
+      { key: 'last_login', label: 'Last sign-in', render: (row) => (row.last_login ? new Date(row.last_login).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Never') },
     ]}
     fields={[
       { name: 'username', label: 'Username', required: true },
