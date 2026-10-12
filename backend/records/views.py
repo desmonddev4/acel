@@ -4,6 +4,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import status, viewsets
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.exceptions import ValidationError
@@ -16,6 +17,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Certificate, CertificationRegistration, ContactMessage, Member, MembershipApplication
 from .serializers import (
+    AdminUserSerializer,
     CertificateSerializer,
     CertificationRegistrationSerializer,
     ContactMessageSerializer,
@@ -217,3 +219,15 @@ class CertificateViewSet(StaffModelViewSet):
     lookup_field = 'number'
     filterset_fields = ('status', 'level')
     search_fields = ('number', 'holder')
+
+
+class AdminUserViewSet(StaffModelViewSet):
+    queryset = get_user_model().objects.filter(is_staff=True).order_by('username')
+    serializer_class = AdminUserSerializer
+    filterset_fields = ('is_active',)
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+
+    def destroy(self, request, *args, **kwargs):
+        if self.get_object().pk == request.user.pk:
+            raise ValidationError({'detail': 'You cannot delete your own account.'})
+        return super().destroy(request, *args, **kwargs)

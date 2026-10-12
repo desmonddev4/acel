@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { BadgeCheck, ClipboardList, FileBadge2, LayoutDashboard, LogOut, Mail, UsersRound } from 'lucide-react'
+import { BadgeCheck, ClipboardList, FileBadge2, LayoutDashboard, LogOut, Mail, ShieldCheck, UsersRound } from 'lucide-react'
 
 export const adminLinks = [
   { to: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -8,6 +8,7 @@ export const adminLinks = [
   { to: '/admin/messages', label: 'Messages', icon: Mail },
   { to: '/admin/members', label: 'Members', icon: UsersRound },
   { to: '/admin/certificates', label: 'Certificates', icon: FileBadge2 },
+  { to: '/admin/users', label: 'Admin users', icon: ShieldCheck },
 ]
 
 const css = `

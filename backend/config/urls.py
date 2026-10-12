@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from records.views import (
+    AdminUserViewSet,
     AdminTokenObtainPairView,
     AdminSummaryView,
     CertificateViewSet,
@@ -23,6 +24,7 @@ router.register('admin/registrations', RegistrationViewSet)
 router.register('admin/messages', ContactMessageViewSet)
 router.register('admin/members', MemberViewSet)
 router.register('admin/certificates', CertificateViewSet)
+router.register('admin/users', AdminUserViewSet, basename='admin-user')
 
 urlpatterns = [
     path('django-admin/', admin.site.urls),

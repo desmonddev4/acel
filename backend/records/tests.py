@@ -127,3 +127,40 @@ class AdminApiTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         public_response = self.client.get('/api/public/members/')
         self.assertEqual(public_response.data[0]['name'], 'New Member Org')
+
+class AdminUserManagementTests(APITestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.staff = User.objects.create_user(username='boss', password='long-test-password', is_staff=True)
+        token = RefreshToken.for_user(self.staff).access_token
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+
+    def test_staff_can_create_admin_who_can_sign_in(self):
+        response = self.client.post('/api/admin/users/', {
+            'username': 'newadmin', 'email': 'n@example.com', 'password': 'Str0ng-pass-phrase!',
+        }, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertNotIn('password', response.data)
+        self.assertTrue(get_user_model().objects.get(username='newadmin').is_staff)
+        self.client.credentials()
+        login = self.client.post('/api/auth/token/', {'username': 'newadmin', 'password': 'Str0ng-pass-phrase!'}, format='json')
+        self.assertEqual(login.status_code, 200)
+
+    def test_password_required_and_validated_on_create(self):
+        self.assertEqual(self.client.post('/api/admin/users/', {'username': 'x'}, format='json').status_code, 400)
+        self.assertEqual(self.client.post('/api/admin/users/', {'username': 'x', 'password': '123'}, format='json').status_code, 400)
+
+    def test_cannot_delete_or_deactivate_self(self):
+        self.assertEqual(self.client.delete(f'/api/admin/users/{self.staff.pk}/').status_code, 400)
+        r = self.client.patch(f'/api/admin/users/{self.staff.pk}/', {'is_active': False}, format='json')
+        self.assertEqual(r.status_code, 400)
+
+    def test_blank_password_on_edit_keeps_password(self):
+        r = self.client.patch(f'/api/admin/users/{self.staff.pk}/', {'email': 'a@b.co', 'password': ''}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.check_password('long-test-password'))
+
+    def test_anonymous_denied(self):
+        self.client.credentials()
+        self.assertEqual(self.client.get('/api/admin/users/').status_code, 401)

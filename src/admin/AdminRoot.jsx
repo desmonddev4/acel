@@ -7,6 +7,7 @@ import AdminLayout from './AdminLayout.jsx'
 import AdminLogin from './AdminLogin.jsx'
 import AdminMembers from './pages/AdminMembers.jsx'
 import AdminMessages from './pages/AdminMessages.jsx'
+import AdminUsers from './pages/AdminUsers.jsx'
 import AdminRegistrations from './pages/AdminRegistrations.jsx'
 import { adminRequest, getAccessToken } from './api.js'
 import RequireAdmin from './RequireAdmin.jsx'
@@ -42,6 +43,7 @@ export default function AdminRoot() {
           <Route path="messages" element={<AdminMessages />} />
           <Route path="members" element={<AdminMembers />} />
           <Route path="certificates" element={<AdminCertificates />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="*" element={<Navigate to="dashboard" replace />} />
         </Route>
       </Route>
