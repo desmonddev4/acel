@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Plus, RefreshCw, Search, Trash2, X } from 'lucide-react'
 import { adminRequest } from './api.js'
 
@@ -309,8 +310,8 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
         </div>
       </div>
 
-      {(selected || creating) && (
-        <div className="rp-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) closeEditor() }}>
+      {(selected || creating) && createPortal(
+        <div className="rp rp-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) closeEditor() }}>
           <section role="dialog" aria-modal="true" aria-labelledby="editor-title" className="rp-drawer">
             <header className="rp-dh">
               <div>
@@ -341,7 +342,8 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
               </footer>
             </form>
           </section>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   )
