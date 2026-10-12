@@ -107,6 +107,7 @@ class AdminApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('access', response.data)
+        self.assertIsNotNone(User.objects.get(username='staff').last_login)
 
     def test_staff_can_add_a_public_member(self):
         User = get_user_model()
