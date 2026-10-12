@@ -1,26 +1,29 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader.jsx'
 import { TextField } from '../components/forms/FormFields.jsx'
-import { sampleCertificates } from '../data/directory.js'
-
-function normalise(s) {
-  return s.trim().toUpperCase().replace(/\s+/g, '')
-}
+import { requestJson } from '../lib/api.js'
 
 export default function CertificationVerify() {
   const [query, setQuery] = useState('')
   const [searched, setSearched] = useState(false)
+  const [match, setMatch] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [lookupError, setLookupError] = useState('')
 
-  const match = useMemo(() => {
-    if (!searched) return undefined
-    const q = normalise(query)
-    return sampleCertificates.find((c) => normalise(c.id) === q)
-  }, [searched, query])
-
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     setSearched(true)
+    setMatch(null)
+    setLookupError('')
+    setIsLoading(true)
+    try {
+      setMatch(await requestJson(`/public/certificates/${encodeURIComponent(query.trim())}/`))
+    } catch (error) {
+      if (error.message !== 'Certificate not found.') setLookupError(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -35,12 +38,6 @@ export default function CertificationVerify() {
         <div className="container-edge grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
             <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-[0_18px_40px_-24px_rgba(0,20,45,0.25)] md:p-10">
-              <div className="mb-6 rounded-xl border border-gold/30 bg-gold/5 px-5 py-4 text-[14px] leading-[1.6] text-ink/70">
-                This checks against an illustrative sample register so you can see how verification will work.
-                It will be connected to the Chamber&rsquo;s real certification register once certificates are
-                being issued.
-              </div>
-
               <form onSubmit={onSubmit} className="flex flex-col gap-6 sm:flex-row sm:items-end">
                 <div className="flex-1">
                   <TextField
@@ -56,19 +53,23 @@ export default function CertificationVerify() {
                 </div>
                 <button
                   type="submit"
-                  disabled={!query.trim()}
+                  disabled={!query.trim() || isLoading}
                   className="liquid-btn liquid-btn-hero disabled:cursor-not-allowed disabled:opacity-60"
                   style={{ display: 'inline-flex', alignItems: 'center', height: 'fit-content' }}
                 >
                   <span className="liquid-blob" />
                   <span className="liquid-blob two" />
-                  <span className="liquid-label">Verify</span>
+                  <span className="liquid-label">{isLoading ? 'Checking…' : 'Verify'}</span>
                 </button>
               </form>
 
-              {searched && (
+              {searched && !isLoading && (
                 <div className="mt-8">
-                  {match ? (
+                  {lookupError ? (
+                    <div role="alert" className="rounded-xl border border-[#B42318]/30 bg-[#B42318]/5 p-6 text-[14px] text-[#B42318]">
+                      {lookupError}
+                    </div>
+                  ) : match ? (
                     <div className="rounded-xl border border-emerald/30 bg-emerald/5 p-6">
                       <p className="mb-4 flex items-center gap-2 text-[14.5px] font-medium text-emerald">
                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald text-white">

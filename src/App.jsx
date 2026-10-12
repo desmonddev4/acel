@@ -16,15 +16,14 @@ import Privacy from './pages/Privacy.jsx'
 import Terms from './pages/Terms.jsx'
 import NotFound from './pages/NotFound.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
+import AdminRoot from './admin/AdminRoot.jsx'
 
-export default function App() {
+function PublicSite() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-paper">
-        <ScrollToTop />
-        <Nav />
-        <main>
-          <Routes>
+    <div className="min-h-screen bg-paper">
+      <Nav />
+      <main>
+        <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/what-we-do" element={<WhatWeDo />} />
@@ -39,10 +38,21 @@ export default function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/admin/*" element={<AdminRoot />} />
+        <Route path="/*" element={<PublicSite />} />
+      </Routes>
     </BrowserRouter>
   )
 }

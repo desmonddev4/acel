@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader.jsx'
-import { sampleMembers } from '../data/directory.js'
 import { sectors } from '../data/content.js'
+import { requestJson } from '../lib/api.js'
 
 const TYPE_FILTERS = ['All', 'Organisation', 'Individual']
 
@@ -10,16 +10,26 @@ export default function MembershipDirectory() {
   const [query, setQuery] = useState('')
   const [type, setType] = useState('All')
   const [sector, setSector] = useState('All')
+  const [members, setMembers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+
+  useEffect(() => {
+    requestJson('/public/members/')
+      .then(setMembers)
+      .catch((error) => setLoadError(error.message))
+      .finally(() => setLoading(false))
+  }, [])
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return sampleMembers.filter((m) => {
+    return members.filter((m) => {
       if (type !== 'All' && m.type !== type) return false
       if (sector !== 'All' && m.sector !== sector) return false
       if (q && !m.name.toLowerCase().includes(q)) return false
       return true
     })
-  }, [query, type, sector])
+  }, [members, query, type, sector])
 
   return (
     <>
@@ -31,12 +41,9 @@ export default function MembershipDirectory() {
 
       <section className="section-light py-14 md:py-20">
         <div className="container-edge">
-          <div className="mb-8 rounded-xl border border-gold/30 bg-gold/5 px-5 py-4 text-[14px] leading-[1.6] text-ink/70">
-            The directory below shows illustrative sample entries so you can see how it will work. It will be
-            replaced with real members as applications (
-            <Link to="/membership/apply" className="text-emerald underline underline-offset-2">apply here</Link>
-            ) are approved and onboarded.
-          </div>
+          <p className="mb-6 text-[14px] text-ink/65">
+            Approved members appear here. <Link to="/membership/apply" className="text-emerald underline underline-offset-2">Apply for membership</Link>.
+          </p>
 
           <div className="mb-8 grid gap-4 sm:grid-cols-3">
             <input
@@ -67,8 +74,8 @@ export default function MembershipDirectory() {
             </select>
           </div>
 
-          <p className="mb-4 text-[13.5px] text-ink/50">
-            {results.length} {results.length === 1 ? 'result' : 'results'}
+          <p className="mb-4 text-[13.5px] text-ink/50" aria-live="polite">
+            {loading ? 'Loading members…' : loadError || `${results.length} ${results.length === 1 ? 'result' : 'results'}`}
           </p>
 
           <div className="overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-[0_18px_40px_-24px_rgba(0,20,45,0.25)]">
@@ -84,10 +91,10 @@ export default function MembershipDirectory() {
                 </tr>
               </thead>
               <tbody>
-                {results.length === 0 ? (
+                {loading || loadError || results.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-5 py-10 text-center text-ink/45">
-                      No members match your search.
+                      {loading ? 'Loading the member register…' : loadError || 'No members match your search.'}
                     </td>
                   </tr>
                 ) : (
