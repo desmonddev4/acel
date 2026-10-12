@@ -62,32 +62,38 @@ const css = `
 .rp-pager{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:12px;color:rgba(16,32,26,.55)}
 .rp-pager .rp-btn{height:30px;font-size:12px}
 
-.rp-overlay{position:fixed;inset:0;z-index:60;display:flex;justify-content:flex-end;background:rgba(16,32,26,.3);backdrop-filter:blur(4px);animation:rpFade .25s both}
+.rp-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(16,32,26,.38);backdrop-filter:blur(5px);animation:rpFade .25s both}
 @keyframes rpFade{from{opacity:0}}
-.rp-drawer{display:flex;flex-direction:column;width:100%;max-width:420px;height:100%;overflow-y:auto;
-  background:rgba(250,252,250,.78);border-left:1px solid rgba(255,255,255,.8);
+.rp-drawer{display:flex;flex-direction:column;width:100%;max-width:680px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow:hidden;
+  background:rgba(252,253,252,.94);border:1px solid rgba(255,255,255,.85);border-radius:18px;
   backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
-  box-shadow:-20px 0 50px rgba(16,32,26,.2);animation:rpSlide .35s cubic-bezier(.2,.8,.2,1) both}
-@keyframes rpSlide{from{transform:translateX(40px);opacity:0}}
-.rp-dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.5)}
+  box-shadow:0 30px 70px rgba(16,32,26,.35);animation:rpPop .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rpPop{from{transform:translateY(14px) scale(.98);opacity:0}}
+.rp-dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 22px;border-bottom:1px solid var(--line);
+  background:linear-gradient(135deg,rgba(11,138,62,.1),rgba(184,138,66,.1))}
 .rp-dh small{display:block;font-size:11.5px;color:var(--gold);font-weight:600}
-.rp-dh h2{margin:2px 0 0;font-family:var(--font-display,inherit);font-size:16px;font-weight:600}
-.rp-form{display:flex;flex:1;flex-direction:column}
-.rp-body{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px 18px}
-.rp-field{display:block;font-size:12px;font-weight:500;color:rgba(16,32,26,.75)}
-.rp-field .ctl{display:block;width:100%;margin-top:5px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.8);font-size:13px;color:var(--ink);outline:none;transition:.2s}
-.rp-field .ctl:focus{border-color:var(--em);background:#fff;box-shadow:0 0 0 3px rgba(11,138,62,.12)}
-.rp-check{display:flex;align-items:center;gap:8px;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-size:13px;font-weight:400;color:var(--ink);cursor:pointer;transition:.2s}
-.rp-check:hover{background:#fff;border-color:rgba(11,138,62,.3)}
+.rp-dh h2{margin:2px 0 0;font-family:var(--font-display,inherit);font-size:18px;font-weight:600}
+.rp-form{display:flex;flex:1;min-height:0;flex-direction:column}
+.rp-body{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:20px 22px}
+.rp-sec{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(16,32,26,.45)}
+.rp-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:var(--line)}
+.rp-sum div{padding:9px 12px;background:rgba(255,255,255,.85);min-width:0}
+.rp-sum dt{font-size:11px;color:rgba(16,32,26,.5)}
+.rp-sum dd{margin:2px 0 0;font-size:13px;font-weight:500;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap}
+.rp-sum .wide{grid-column:1/-1}
+.rp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rp-grid .full{grid-column:1/-1}
+.rp-field{display:block;font-size:12px;font-weight:600;color:rgba(16,32,26,.75)}
+.rp-field .ctl{display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13.5px;font-weight:400;color:var(--ink);outline:none;transition:.2s}
+.rp-field .ctl:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(11,138,62,.12)}
+.rp-check{display:flex;align-items:center;gap:8px;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:400;color:var(--ink);cursor:pointer;transition:.2s}
+.rp-check:hover{border-color:rgba(11,138,62,.35)}
 .rp-check input{width:15px;height:15px;accent-color:#047622}
-.rp-details{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.6);border:1px solid var(--line)}
-.rp-details summary{cursor:pointer;font-size:12.5px;font-weight:600}
-.rp-details pre{margin:10px 0 0;max-height:280px;overflow:auto;white-space:pre-wrap;padding:10px;border-radius:8px;background:rgba(16,32,26,.05);font-size:11.5px;line-height:1.5}
 .rp-pay{margin:0;font-size:12px;color:rgba(16,32,26,.6)}
 .rp-pay code{color:var(--ink)}
-.rp-foot{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.7);backdrop-filter:blur(12px)}
+.rp-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-top:1px solid var(--line);background:rgba(255,255,255,.8)}
 .rp-foot div{display:flex;gap:8px}
-@media(max-width:640px){.rp-head{flex-direction:column;align-items:stretch}.rp-head-actions{justify-content:flex-end}.rp-tools{flex-direction:column}}
+@media(max-width:640px){.rp-overlay{padding:0;align-items:flex-end}.rp-drawer{max-height:94dvh;border-radius:18px 18px 0 0}.rp-grid,.rp-sum{grid-template-columns:1fr}.rp-head{flex-direction:column;align-items:stretch}.rp-head-actions{justify-content:flex-end}.rp-tools{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.rp *{animation:none!important;transition:none!important}}
 `
 
@@ -101,6 +107,32 @@ function displayValue(value) {
   return String(value)
 }
 
+const humanize = (key) => key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').replace(/^./, (c) => c.toUpperCase())
+
+function formatValue(value) {
+  if (value === null || value === undefined || value === '') return '—'
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+  if (Array.isArray(value)) return value.map(formatValue).join(', ')
+  if (typeof value === 'object') return JSON.stringify(value)
+  return String(value)
+}
+
+function Summary({ title, items }) {
+  if (items.length === 0) return null
+  return (
+    <section>
+      <h3 className="rp-sec">{title}</h3>
+      <dl className="rp-sum">
+        {items.map(([label, value]) => (
+          <div key={label} className={String(value).length > 40 || String(value).includes('\n') ? 'wide' : undefined}>
+            <dt>{label}</dt><dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
 function EditorField({ field, value, onChange }) {
   const common = {
     id: `record-${field.name}`,
@@ -111,7 +143,7 @@ function EditorField({ field, value, onChange }) {
   }
 
   return (
-    <label className="rp-field">
+    <label className={`rp-field${field.type === 'textarea' || field.type === 'checkbox' ? ' full' : ''}`}>
       {field.label}
       {field.type === 'textarea' ? (
         <textarea {...common} rows={field.rows || 4} />
@@ -129,7 +161,7 @@ function EditorField({ field, value, onChange }) {
   )
 }
 
-export default function ResourcePage({ title, description, endpoint, columns, fields, statusOptions }) {
+export default function ResourcePage({ title, description, endpoint, columns, fields, statusOptions, recordLabel }) {
   const [records, setRecords] = useState([])
   const [page, setPage] = useState(1)
   const [pageCount, setPageCount] = useState(1)
@@ -204,7 +236,7 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
   }
 
   const remove = async () => {
-    if (!selected || !window.confirm(`Delete ${selected.name || selected.id || selected.number}? This cannot be undone.`)) return
+    if (!selected || !window.confirm(`Delete ${recordName(selected)}? This cannot be undone.`)) return
     setSaving(true)
     setError('')
     try {
@@ -218,6 +250,8 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
       setSaving(false)
     }
   }
+
+  const recordName = (record) => (recordLabel ? recordLabel(record) : record.name || record.id || record.number)
 
   const singular = title.toLowerCase().replace(/s$/, '')
 
@@ -281,14 +315,20 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
             <header className="rp-dh">
               <div>
                 <small>{creating ? 'New record' : 'Record details'}</small>
-                <h2 id="editor-title">{creating ? `Add ${singular}` : selected?.name || selected?.id || selected?.number || title}</h2>
+                <h2 id="editor-title">{creating ? `Add ${singular}` : selected ? recordName(selected) : title}</h2>
               </div>
               <button type="button" onClick={closeEditor} title="Close" aria-label="Close" className="rp-btn ghost icon"><X size={15} aria-hidden="true" /></button>
             </header>
             <form onSubmit={save} className="rp-form">
               <div className="rp-body">
-                {fields.map((field) => <EditorField key={field.name} field={field} value={draft[field.name]} onChange={updateDraft} />)}
-                {selected?.payload && <details className="rp-details"><summary>Submitted form details</summary><pre>{JSON.stringify(selected.payload, null, 2)}</pre></details>}
+                {selected && <Summary title="Record" items={columns.map((column) => [column.label, formatValue(column.render ? column.render(selected) : valueAt(selected, column.key))])} />}
+                {selected?.payload && <Summary title="Submitted details" items={Object.entries(selected.payload).map(([key, value]) => [humanize(key), formatValue(value)])} />}
+                <section>
+                  <h3 className="rp-sec">{selected ? 'Edit' : 'Details'}</h3>
+                  <div className="rp-grid">
+                    {fields.map((field) => <EditorField key={field.name} field={field} value={draft[field.name]} onChange={updateDraft} />)}
+                  </div>
+                </section>
                 {selected?.payment_reference && <p className="rp-pay">Payment reference: <code>{selected.payment_reference}</code> · {selected.payment_status}</p>}
                 {error && <p role="alert" className="rp-error">{error}</p>}
               </div>

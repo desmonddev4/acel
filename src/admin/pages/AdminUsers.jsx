@@ -5,6 +5,7 @@ export default function AdminUsers() {
     title="Admin users"
     description="Add and manage the people who can sign in to this dashboard. Leave the password blank when editing to keep it unchanged."
     endpoint="/admin/users/"
+    recordLabel={(user) => user.username}
     columns={[
       { key: 'username', label: 'Username' },
       { key: 'first_name', label: 'First name' },
@@ -18,7 +19,7 @@ export default function AdminUsers() {
       { name: 'first_name', label: 'First name' },
       { name: 'last_name', label: 'Last name' },
       { name: 'email', label: 'Email', type: 'email' },
-      { name: 'password', label: 'Password (min. 8 characters)', type: 'password' },
+      { name: 'password', label: 'Password (min. 8 characters; blank keeps current)', type: 'password' },
       { name: 'is_active', label: 'Status', type: 'checkbox', checkboxLabel: 'Account is active', defaultValue: true },
     ]}
   />
