@@ -64,34 +64,34 @@ const css = `
 
 .rp-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(16,32,26,.38);backdrop-filter:blur(5px);animation:rpFade .25s both}
 @keyframes rpFade{from{opacity:0}}
-.rp-drawer{display:flex;flex-direction:column;width:100%;max-width:680px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow:hidden;
-  background:rgba(252,253,252,.94);border:1px solid rgba(255,255,255,.85);border-radius:18px;
+.rp-drawer{display:flex;flex-direction:column;width:100%;max-width:520px;max-height:min(600px,calc(100dvh - 40px));overflow:hidden;
+  background:rgba(252,253,252,.94);border:1px solid rgba(255,255,255,.85);border-radius:16px;
   backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
   box-shadow:0 30px 70px rgba(16,32,26,.35);animation:rpPop .3s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rpPop{from{transform:translateY(14px) scale(.98);opacity:0}}
-.rp-dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 22px;border-bottom:1px solid var(--line);
+.rp-dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);
   background:linear-gradient(135deg,rgba(11,138,62,.1),rgba(184,138,66,.1))}
 .rp-dh small{display:block;font-size:11.5px;color:var(--gold);font-weight:600}
-.rp-dh h2{margin:2px 0 0;font-family:var(--font-display,inherit);font-size:18px;font-weight:600}
+.rp-dh h2{margin:2px 0 0;font-family:var(--font-display,inherit);font-size:16px;font-weight:600}
 .rp-form{display:flex;flex:1;min-height:0;flex-direction:column}
-.rp-body{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:20px 22px}
+.rp-body{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:14px 18px}
 .rp-sec{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(16,32,26,.45)}
 .rp-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:var(--line)}
-.rp-sum div{padding:9px 12px;background:rgba(255,255,255,.85);min-width:0}
+.rp-sum div{padding:7px 10px;background:rgba(255,255,255,.85);min-width:0}
 .rp-sum dt{font-size:11px;color:rgba(16,32,26,.5)}
 .rp-sum dd{margin:2px 0 0;font-size:13px;font-weight:500;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap}
 .rp-sum .wide{grid-column:1/-1}
-.rp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .rp-grid .full{grid-column:1/-1}
 .rp-field{display:block;font-size:12px;font-weight:600;color:rgba(16,32,26,.75)}
-.rp-field .ctl{display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13.5px;font-weight:400;color:var(--ink);outline:none;transition:.2s}
+.rp-field .ctl{display:block;width:100%;margin-top:4px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px;font-weight:400;color:var(--ink);outline:none;transition:.2s}
 .rp-field .ctl:focus{border-color:var(--em);box-shadow:0 0 0 3px rgba(11,138,62,.12)}
 .rp-check{display:flex;align-items:center;gap:8px;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:400;color:var(--ink);cursor:pointer;transition:.2s}
 .rp-check:hover{border-color:rgba(11,138,62,.35)}
 .rp-check input{width:15px;height:15px;accent-color:#047622}
 .rp-pay{margin:0;font-size:12px;color:rgba(16,32,26,.6)}
 .rp-pay code{color:var(--ink)}
-.rp-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-top:1px solid var(--line);background:rgba(255,255,255,.8)}
+.rp-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.8)}
 .rp-foot div{display:flex;gap:8px}
 @media(max-width:640px){.rp-overlay{padding:0;align-items:flex-end}.rp-drawer{max-height:94dvh;border-radius:18px 18px 0 0}.rp-grid,.rp-sum{grid-template-columns:1fr}.rp-head{flex-direction:column;align-items:stretch}.rp-head-actions{justify-content:flex-end}.rp-tools{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.rp *{animation:none!important;transition:none!important}}
