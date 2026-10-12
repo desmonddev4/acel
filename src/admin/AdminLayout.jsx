@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Globe, LogOut } from 'lucide-react'
+import { Globe } from 'lucide-react'
 import { clearAdminSession } from './api.js'
 import AdminSidebar, { adminLinks } from './AdminSidebar.jsx'
 
@@ -14,16 +14,14 @@ const css = `
   background:rgba(255,255,255,.55);border-bottom:1px solid rgba(255,255,255,.7);
   backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);
   box-shadow:0 1px 0 rgba(16,32,26,.06)}
-.al-logo{font-family:var(--font-display,inherit);font-size:15px;font-weight:600;color:var(--ink);text-decoration:none}
+.al-logo{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display,inherit);font-size:15px;font-weight:600;color:var(--ink);text-decoration:none}
+.al-logo img{height:36px;width:auto;border-radius:6px;display:block}
 .al-logo span{color:var(--gold)}
 .al-actions{display:flex;align-items:center;gap:8px}
 .al-pill{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;font-size:12px;
   color:rgba(16,32,26,.7);text-decoration:none;background:rgba(255,255,255,.6);border:1px solid rgba(16,32,26,.08);
   transition:transform .2s,box-shadow .2s,color .2s}
 .al-pill:hover{color:var(--em-deep);transform:translateY(-1px);box-shadow:0 6px 14px rgba(16,32,26,.1)}
-.al-out{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;cursor:pointer;
-  color:rgba(16,32,26,.7);background:rgba(255,255,255,.6);border:1px solid rgba(16,32,26,.08);transition:.2s}
-.al-out:hover{color:#fff;background:#b42318;border-color:#b42318;transform:translateY(-1px) rotate(-8deg);box-shadow:0 6px 14px rgba(180,35,24,.3)}
 .al-body{position:relative;z-index:1;display:grid;grid-template-columns:210px minmax(0,1fr);max-width:1500px;margin:0 auto;min-height:calc(100vh - 56px)}
 .al-main{min-width:0;padding:18px 20px 40px}
 .al-top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
@@ -51,15 +49,14 @@ export default function AdminLayout({ onSignOut }) {
     <div className="al">
       <style>{css}</style>
       <header className="al-head">
-        <a href="/admin/dashboard" className="al-logo">ACEL <span>/</span> Admin</a>
+        <a href="/admin/dashboard" className="al-logo"><img src="/acel-logo.jpeg" alt="ACEL" /><span>Admin</span></a>
         <div className="al-actions">
           <a href="/" className="al-pill"><Globe size={14} aria-hidden="true" /><span>Public website</span></a>
-          <button type="button" onClick={signOut} title="Sign out" aria-label="Sign out" className="al-out"><LogOut size={15} aria-hidden="true" /></button>
         </div>
       </header>
 
       <div className="al-body">
-        <AdminSidebar />
+        <AdminSidebar onSignOut={signOut} />
         <main className="al-main">
           <div className="al-top"><i /><h1>{title}</h1><small>ACEL Secretariat</small></div>
           <div key={location.pathname} className="al-page"><Outlet /></div>

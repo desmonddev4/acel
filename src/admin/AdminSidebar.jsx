@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { BadgeCheck, ClipboardList, FileBadge2, LayoutDashboard, Mail, UsersRound } from 'lucide-react'
+import { BadgeCheck, ClipboardList, FileBadge2, LayoutDashboard, LogOut, Mail, UsersRound } from 'lucide-react'
 
 export const adminLinks = [
   { to: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -12,7 +12,7 @@ export const adminLinks = [
 
 const css = `
 .as{--ink:#10201a;--em:#0b8a3e;--em-deep:#047622;--gold:#b88a42;
-  position:sticky;top:70px;align-self:start;margin:14px 0 14px 14px;padding:10px;border-radius:16px;
+  position:sticky;top:70px;align-self:start;display:flex;flex-direction:column;height:calc(100vh - 84px);margin:14px 0 14px 14px;padding:10px;border-radius:16px;
   background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);
   backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);
   box-shadow:0 8px 24px rgba(16,32,26,.07),inset 0 1px 0 rgba(255,255,255,.8)}
@@ -27,19 +27,23 @@ const css = `
   background:linear-gradient(135deg,rgba(11,138,62,.16),rgba(255,255,255,.7));
   box-shadow:0 4px 12px rgba(11,138,62,.12),inset 0 0 0 1px rgba(11,138,62,.15)}
 .as-link.on::before{content:'';position:absolute;left:-10px;top:22%;bottom:22%;width:3px;border-radius:3px;background:var(--gold)}
+.as-out{margin-top:auto;display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:10px;cursor:pointer;
+  font:inherit;font-size:12.5px;color:rgba(16,32,26,.68);background:transparent;border:1px solid rgba(16,32,26,.08);transition:.2s}
+.as-out:hover{color:#fff;background:#b42318;border-color:#b42318}
 @media(max-width:767px){
-  .as{position:static;margin:10px 10px 0;padding:6px}
+  .as{position:static;height:auto;margin:10px 10px 0;padding:6px}
   .as-title{display:none}
   .as-nav{flex-direction:row;overflow-x:auto;scrollbar-width:none}
   .as-nav::-webkit-scrollbar{display:none}
   .as-link{flex:none;white-space:nowrap}
   .as-link:hover{transform:none}
+  .as-out{margin-top:6px}
   .as-link.on::before{display:none}
 }
 @media(prefers-reduced-motion:reduce){.as *{transition:none!important}}
 `
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onSignOut }) {
   return (
     <aside className="as">
       <style>{css}</style>
@@ -51,6 +55,7 @@ export default function AdminSidebar() {
           </NavLink>
         ))}
       </nav>
+      <button type="button" onClick={onSignOut} className="as-out"><LogOut size={15} aria-hidden="true" /><span>Sign out</span></button>
     </aside>
   )
 }

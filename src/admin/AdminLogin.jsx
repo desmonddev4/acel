@@ -1,117 +1,220 @@
 import { useState } from 'react'
-import { LockKeyhole, ShieldCheck } from 'lucide-react'
+import { AlertCircle, Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react'
 import { signIn } from './api.js'
 
-const css = `
-.lg{--ink:#10201a;--em:#0b8a3e;--em-deep:#047622;--gold:#b88a42;--gold-br:#e0b062;
-  min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;font-size:14px;color:var(--ink);
-  background:#0d1a14;position:relative;overflow:hidden}
-.lg *{box-sizing:border-box}
-.lg-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:lgFloat 14s ease-in-out infinite}
-.lg-orb.a{width:380px;height:380px;background:#0b8a3e;top:-90px;left:-80px}
-.lg-orb.b{width:320px;height:320px;background:#b88a42;bottom:-80px;right:30%;animation-delay:-5s}
-.lg-orb.c{width:260px;height:260px;background:#14c26a;top:40%;right:-60px;opacity:.35;animation-delay:-9s}
-@keyframes lgFloat{50%{transform:translate(26px,-22px) scale(1.06)}}
+/*
+  ACEL Secretariat - admin sign-in
+  Design notes
+  - Palette: Chamber green #0a3d27, deep #062a1a, brass #c49a4f, paper #f5f7f4, ink #14231b
+  - Type: Newsreader (headings) + Hanken Grotesk (UI), with system fallbacks
+  - One memorable element: a guilloche rosette (the engraved pattern on certificates
+    and banknotes), generated in SVG. Everything else stays quiet.
+*/
 
-.lg-brand{position:relative;z-index:1;padding:44px 52px;display:flex;flex-direction:column;justify-content:space-between;color:#fff}
-.lg-logo{font-family:var(--font-display,inherit);font-size:17px;font-weight:600}
-.lg-logo span{color:var(--gold-br)}
-.lg-hero h1{font-family:var(--font-display,inherit);font-size:34px;line-height:1.15;margin:0;max-width:420px;font-weight:600}
-.lg-hero p{margin:14px 0 0;max-width:380px;font-size:14px;line-height:1.65;color:rgba(255,255,255,.66)}
-.lg-chips{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
-.lg-chip{padding:6px 12px;border-radius:999px;font-size:12px;color:rgba(255,255,255,.85);
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);transition:.25s}
-.lg-chip:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
-.lg-note{font-size:12px;color:rgba(255,255,255,.45)}
+const font = "@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap');"
 
-.lg-side{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:32px 24px}
-.lg-card{width:100%;max-width:380px;padding:28px;border-radius:20px;
-  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);
-  backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
-  box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);
-  color:#fff;animation:lgIn .6s cubic-bezier(.2,.8,.2,1) both}
-@keyframes lgIn{from{opacity:0;transform:translateY(18px) scale(.98)}}
-.lg-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--gold-br);
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);margin-bottom:16px}
-.lg-card h2{margin:0;font-family:var(--font-display,inherit);font-size:21px;font-weight:600}
-.lg-card .sub{margin:6px 0 20px;font-size:13px;color:rgba(255,255,255,.65)}
-.lg-field{display:block;margin-top:14px}
-.lg-field span{display:block;font-size:12px;font-weight:500;color:rgba(255,255,255,.8);margin-bottom:6px}
-.lg-field input{width:100%;padding:10px 12px;font-size:13.5px;color:#fff;border-radius:10px;outline:none;
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);transition:.2s}
-.lg-field input:focus{border-color:var(--gold-br);background:rgba(255,255,255,.16);box-shadow:0 0 0 3px rgba(224,176,98,.18)}
-.lg-err{margin:14px 0 0;padding:8px 10px;border-radius:8px;font-size:12.5px;color:#ffd9d4;background:rgba(180,35,24,.3);border:1px solid rgba(255,140,128,.35)}
-.lg-btn{position:relative;overflow:hidden;margin-top:20px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:11px 14px;border:0;border-radius:11px;font-size:13.5px;font-weight:600;color:#fff;cursor:pointer;
-  background:linear-gradient(135deg,#0b8a3e,#047622);box-shadow:0 8px 20px rgba(4,118,34,.4);
-  transition:transform .2s,box-shadow .2s,filter .2s}
-.lg-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);
-  transform:translateX(-120%);transition:transform .6s}
-.lg-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 26px rgba(4,118,34,.5);filter:brightness(1.08)}
-.lg-btn:hover:not(:disabled)::after{transform:translateX(120%)}
-.lg-btn:active:not(:disabled){transform:translateY(0)}
-.lg-btn:disabled{opacity:.6;cursor:wait}
-.lg-back{display:inline-block;margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.6);text-decoration:none;transition:.2s}
-.lg-back:hover{color:#fff;transform:translateX(-2px)}
-@media(max-width:900px){.lg{grid-template-columns:1fr}.lg-brand{display:none}}
-@media(prefers-reduced-motion:reduce){.lg *{animation:none!important;transition:none!important}}
+const css = `${font}
+.al{--green:#0a3d27;--green-deep:#062a1a;--brass:#c49a4f;--brass-lt:#e3c58a;--paper:#f5f7f4;--ink:#14231b;--muted:#5b6b62;--line:#cfd8d2;--danger:#a3261b;
+  min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;color:var(--ink);background:var(--paper)}
+.al *{box-sizing:border-box}
+
+/* ---------- brand panel ---------- */
+.al-brand{position:relative;overflow:hidden;background:var(--green);color:#fff;
+  padding:40px 56px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;
+  background-image:radial-gradient(120% 90% at 100% 100%,var(--green-deep) 0%,transparent 60%)}
+.al-name{position:relative;z-index:2;margin:0;font-size:15px;font-weight:600;letter-spacing:.01em}
+.al-name small{display:block;margin-top:2px;font-size:13px;font-weight:400;color:rgba(255,255,255,.62)}
+
+.al-seal{position:absolute;z-index:1;width:min(760px,125%);aspect-ratio:1;right:-26%;top:50%;margin-top:calc(min(760px,125%) / -2 + 40px);
+  opacity:0;animation:alSeal 1.4s cubic-bezier(.2,.7,.2,1) .1s forwards;pointer-events:none}
+@keyframes alSeal{from{opacity:0;transform:scale(.94) rotate(-6deg)}to{opacity:1;transform:none}}
+
+.al-copy{position:relative;z-index:2;max-width:430px}
+.al-copy h1{margin:0;font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:500;
+  font-size:clamp(32px,3.3vw,44px);line-height:1.12;letter-spacing:-.01em}
+.al-copy p{margin:16px 0 0;max-width:400px;line-height:1.65;color:rgba(255,255,255,.72)}
+.al-foot{position:relative;z-index:2;margin:0;font-size:13px;color:rgba(255,255,255,.55)}
+
+/* ---------- form panel ---------- */
+.al-side{display:flex;align-items:center;justify-content:center;padding:40px 28px}
+.al-form{width:100%;max-width:392px}
+.al-form h2{margin:0;font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:600;font-size:30px;letter-spacing:-.01em}
+.al-sub{margin:8px 0 28px;color:var(--muted);line-height:1.55}
+
+.al-field{display:block;margin-bottom:18px}
+.al-label{display:block;margin-bottom:7px;font-size:14px;font-weight:500}
+.al-inputwrap{position:relative}
+.al-input{width:100%;height:46px;padding:0 14px;font:inherit;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;transition:border-color .15s,box-shadow .15s}
+.al-input:hover{border-color:#aebbb3}
+.al-input:focus-visible{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(10,61,39,.18)}
+.al-input[aria-invalid="true"]{border-color:var(--danger)}
+.al-input.has-btn{padding-right:48px}
+.al-eye{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;
+  border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer}
+.al-eye:hover{color:var(--ink);background:rgba(10,61,39,.07)}
+.al-eye:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+
+.al-hint{margin:8px 0 0;font-size:13px;color:#8a5a12}
+.al-err{display:flex;gap:10px;align-items:flex-start;margin:0 0 18px;padding:11px 13px;border-radius:8px;
+  font-size:14px;line-height:1.45;color:#7d1d14;background:#fdecea;border:1px solid #f1b9b2}
+.al-err svg{flex:none;margin-top:2px}
+
+.al-btn{width:100%;height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;margin-top:6px;
+  border:0;border-radius:8px;font:inherit;font-weight:600;color:#fff;background:var(--green);cursor:pointer;
+  transition:background .15s,box-shadow .15s,transform .1s}
+.al-btn:hover:not(:disabled){background:var(--green-deep)}
+.al-btn:active:not(:disabled){transform:translateY(1px)}
+.al-btn:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.al-btn:disabled{opacity:.72;cursor:progress}
+.al-spin{animation:alSpin .8s linear infinite}
+@keyframes alSpin{to{transform:rotate(360deg)}}
+
+.al-back{display:inline-block;margin-top:24px;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.al-back:hover{color:var(--ink);text-decoration-color:currentColor}
+.al-back:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:2px}
+
+/* ---------- small screens ---------- */
+@media(max-width:900px){
+  .al{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .al-brand{padding:22px 24px}
+  .al-seal,.al-copy,.al-foot{display:none}
+  .al-side{align-items:flex-start;padding:36px 24px 48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .al-seal{animation:none;opacity:1}
+  .al-spin{animation-duration:2s}
+  .al *{transition:none!important}
+}
 `
+
+/* Guilloche rosette: overlapping rotated ellipses plus a fine inner lattice. */
+function Rosette() {
+  const outer = Array.from({ length: 48 }, (_, i) => (i * 180) / 48)
+  const inner = Array.from({ length: 36 }, (_, i) => (i * 180) / 36 + 2.5)
+  const rings = [120, 150, 178]
+  return (
+    <svg className="al-seal" viewBox="-200 -200 400 400" aria-hidden="true" focusable="false" fill="none">
+      <g stroke="#c49a4f" strokeWidth=".45" opacity=".55">
+        {outer.map((deg) => <ellipse key={deg} rx="185" ry="62" transform={`rotate(${deg})`} />)}
+      </g>
+      <g stroke="#e3c58a" strokeWidth=".4" opacity=".4">
+        {inner.map((deg) => <ellipse key={deg} rx="118" ry="38" transform={`rotate(${deg})`} />)}
+      </g>
+      <g stroke="#c49a4f" strokeWidth=".6" opacity=".5">
+        {rings.map((r) => <circle key={r} r={r} />)}
+      </g>
+      <circle r="34" fill="#062a1a" stroke="#e3c58a" strokeWidth=".8" opacity=".95" />
+      <text textAnchor="middle" y="6" fontFamily="Newsreader, Georgia, serif" fontSize="17" fontWeight="600" fill="#e3c58a">ACEL</text>
+    </svg>
+  )
+}
 
 export default function AdminLogin({ onAuthenticated }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [capsOn, setCapsOn] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
   const submit = async (event) => {
     event.preventDefault()
+    if (busy) return
     setBusy(true)
     setError('')
     try {
-      await signIn(username, password)
+      await signIn(username.trim(), password)
       onAuthenticated()
     } catch (loginError) {
-      setError(loginError.message)
+      setError(loginError?.message || 'We could not sign you in. Check your details and try again.')
     } finally {
       setBusy(false)
     }
   }
 
-  return (
-    <main className="lg">
-      <style>{css}</style>
-      <span className="lg-orb a" /><span className="lg-orb b" /><span className="lg-orb c" />
+  const trackCaps = (event) => setCapsOn(event.getModifierState?.('CapsLock') ?? false)
 
-      <section className="lg-brand">
-        <p className="lg-logo">ACEL <span>/</span> Secretariat</p>
-        <div className="lg-hero">
-          <h1>The Chamber, in good order.</h1>
-          <p>Manage applications, member records, certification and correspondence from one secure workspace.</p>
-          <div className="lg-chips">
-            {['Applications', 'Members', 'Certificates', 'Messages'].map((label) => <span key={label} className="lg-chip">{label}</span>)}
-          </div>
+  return (
+    <main className="al">
+      <style>{css}</style>
+
+      <section className="al-brand">
+        <p className="al-name">ACEL Secretariat<small>Staff workspace</small></p>
+        <Rosette />
+        <div className="al-copy">
+          <h1>Every member, application and certificate in one register.</h1>
+          <p>Review applications, keep member records current, issue certificates and answer correspondence without leaving this workspace.</p>
         </div>
-        <p className="lg-note">Restricted to authorised ACEL staff.</p>
+        <p className="al-foot">Restricted to authorised ACEL staff.</p>
       </section>
 
-      <section className="lg-side">
-        <form onSubmit={submit} className="lg-card">
-          <div className="lg-icon"><ShieldCheck size={18} aria-hidden="true" /></div>
-          <h2>Admin portal</h2>
-          <p className="sub">Sign in with your staff account.</p>
+      <section className="al-side">
+        <form onSubmit={submit} className="al-form" noValidate={false}>
+          <h2>Sign in</h2>
+          <p className="al-sub">Use the staff account issued by the Secretariat office.</p>
 
-          <label className="lg-field"><span>Username</span>
-            <input id="admin-username" autoComplete="username" required value={username} onChange={(event) => setUsername(event.target.value)} />
-          </label>
-          <label className="lg-field"><span>Password</span>
-            <input id="admin-password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
+          {error && (
+            <p role="alert" className="al-err">
+              <AlertCircle size={16} aria-hidden="true" />
+              <span>{error}</span>
+            </p>
+          )}
+
+          <label className="al-field" htmlFor="admin-username">
+            <span className="al-label">Username</span>
+            <input
+              id="admin-username"
+              className="al-input"
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck="false"
+              required
+              autoFocus
+              aria-invalid={error ? 'true' : undefined}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
           </label>
 
-          {error && <p role="alert" className="lg-err">{error}</p>}
-          <button type="submit" disabled={busy} className="lg-btn">
-            <LockKeyhole size={15} aria-hidden="true" />{busy ? 'Signing in…' : 'Sign in'}
+          <div className="al-field">
+            <label className="al-label" htmlFor="admin-password">Password</label>
+            <div className="al-inputwrap">
+              <input
+                id="admin-password"
+                className="al-input has-btn"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                aria-invalid={error ? 'true' : undefined}
+                aria-describedby={capsOn ? 'admin-caps' : undefined}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                onKeyUp={trackCaps}
+                onKeyDown={trackCaps}
+                onBlur={() => setCapsOn(false)}
+              />
+              <button
+                type="button"
+                className="al-eye"
+                onClick={() => setShowPassword((value) => !value)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+              </button>
+            </div>
+            {capsOn && <p id="admin-caps" className="al-hint">Caps Lock is on.</p>}
+          </div>
+
+          <button type="submit" disabled={busy} className="al-btn">
+            {busy
+              ? <><Loader2 size={17} className="al-spin" aria-hidden="true" />Signing in…</>
+              : <><LockKeyhole size={16} aria-hidden="true" />Sign in</>}
           </button>
-          <a href="/" className="lg-back">← Back to public website</a>
+
+          <a href="/" className="al-back">Back to the public website</a>
         </form>
       </section>
     </main>
