@@ -20,14 +20,14 @@ const font = "@import url('https://fonts.googleapis.com/css2?family=Hanken+Grote
 const css = `${font}
 .al{--green:#0a3d27;--green-deep:#062a1a;--green-soft:#e7f0ea;--brass:#c49a4f;--brass-lt:#e3c58a;--paper:#f3f6f2;
   --ink:#10241a;--muted:#5b6b62;--line:#d3dcd6;--ok:#12803f;--danger:#b3261e;
-  min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;color:var(--ink);background:var(--paper)}
+  height:100vh;height:100dvh;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;color:var(--ink);color:#fff;background:var(--green);
+  background-image:radial-gradient(120% 90% at 100% 100%,var(--green-deep) 0%,transparent 60%)}
 .al *{box-sizing:border-box}
 
 /* ---------- brand panel ---------- */
-.al-brand{position:relative;overflow:hidden;background:var(--green);color:#fff;
-  padding:40px 56px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;
-  background-image:radial-gradient(120% 90% at 100% 100%,var(--green-deep) 0%,transparent 60%)}
+.al-brand{position:relative;overflow:hidden;color:#fff;
+  padding:32px 56px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;}
 .al-id{position:relative;z-index:2;display:flex;align-items:center;gap:14px}
 .al-badge{width:56px;height:56px;flex:none;display:grid;place-items:center;border-radius:14px;background:#fff;
   box-shadow:0 6px 18px rgba(0,0,0,.28);overflow:hidden;padding:5px}
@@ -46,16 +46,16 @@ const css = `${font}
 .al-foot{position:relative;z-index:2;margin:0;font-size:13px;color:rgba(255,255,255,.55)}
 
 /* ---------- form panel ---------- */
-.al-side{display:flex;align-items:center;justify-content:center;padding:48px 32px;
-  background:radial-gradient(90% 60% at 50% 0%,#fff 0%,transparent 70%),var(--paper)}
+.al-side{display:flex;align-items:center;justify-content:center;padding:20px 32px;min-height:0;color:var(--ink)}
 
-.al-card{width:100%;max-width:468px;min-height:600px;display:flex;flex-direction:column;
-  padding:44px 44px 36px;background:#fff;border:1px solid var(--line);border-radius:20px;position:relative;
+.al-card{width:100%;max-width:468px;max-height:100%;overflow-y:auto;display:flex;flex-direction:column;
+  padding:32px 40px 28px;background:#fff;border:1px solid var(--line);border-radius:20px;position:relative;
   box-shadow:0 1px 2px rgba(16,36,26,.06),0 24px 48px -16px rgba(10,61,39,.22)}
 .al-card::before{content:'';position:absolute;left:44px;right:44px;top:-1px;height:3px;border-radius:0 0 3px 3px;
   background:linear-gradient(90deg,var(--green),var(--brass))}
 
-.al-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.al-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+@media(max-height:760px){.al-head{display:none}}
 .al-logo{width:64px;height:64px;flex:none;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;padding:5px}
 .al-logo img{width:100%;height:100%;object-fit:contain;display:block}
 .al-logo.fallback{font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:17px;color:var(--green);background:var(--green-soft);border-color:transparent}
@@ -63,14 +63,14 @@ const css = `${font}
 .al-head strong{display:block;font-size:15px;color:var(--green);font-weight:600}
 
 .al-card h2{margin:0;font-family:'Newsreader',Georgia,'Times New Roman',serif;font-weight:600;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink)}
-.al-sub{margin:8px 0 26px;color:var(--muted);line-height:1.55}
+.al-sub{margin:6px 0 18px;color:var(--muted);line-height:1.55}
 
 .al-form{display:flex;flex-direction:column;flex:1}
-.al-field{margin-bottom:20px}
+.al-field{margin-bottom:14px}
 .al-label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--ink)}
 .al-box{position:relative}
 .al-lead{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#7f8f86;pointer-events:none;display:grid;transition:color .15s}
-.al-input{width:100%;height:52px;padding:0 48px 0 46px;font:inherit;font-size:15px;color:var(--ink);background:#f8faf8;
+.al-input{width:100%;height:48px;padding:0 48px 0 46px;font:inherit;font-size:15px;color:var(--ink);background:#f8faf8;
   border:1.5px solid var(--line);border-radius:12px;transition:border-color .15s,box-shadow .15s,background .15s}
 .al-input::placeholder{color:#9aa8a0}
 .al-input:hover{border-color:#aebbb3;background:#fff}
@@ -96,7 +96,7 @@ const css = `${font}
   font-size:14px;line-height:1.45;color:#7d1d14;background:#fdecea;border:1px solid #f1b9b2}
 .al-banner svg{flex:none;margin-top:2px}
 
-.al-btn{position:relative;overflow:hidden;width:100%;height:54px;display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;
+.al-btn{position:relative;overflow:hidden;width:100%;height:50px;display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;
   border:0;border-radius:12px;font:inherit;font-size:15px;font-weight:600;letter-spacing:.01em;color:#fff;cursor:pointer;
   background:linear-gradient(135deg,#0d5535 0%,var(--green) 55%,var(--green-deep) 100%);
   box-shadow:0 10px 22px -8px rgba(10,61,39,.6);transition:transform .18s,box-shadow .18s,filter .18s}
@@ -112,10 +112,10 @@ const css = `${font}
 .al-spin{animation:alSpin .8s linear infinite}
 @keyframes alSpin{to{transform:rotate(360deg)}}
 
-.al-divider{display:flex;align-items:center;gap:14px;margin:auto 0 0;padding-top:28px;font-size:13px;color:var(--muted)}
+.al-divider{display:flex;align-items:center;gap:14px;margin:auto 0 0;padding-top:16px;font-size:13px;color:var(--muted)}
 .al-divider::before,.al-divider::after{content:'';flex:1;height:1px;background:var(--line)}
 
-.al-back{display:inline-flex;width:100%;height:50px;margin-top:16px;align-items:center;justify-content:center;gap:10px;
+.al-back{display:inline-flex;width:100%;height:46px;margin-top:12px;align-items:center;justify-content:center;gap:10px;
   border:1.5px solid var(--line);border-radius:12px;font-size:14.5px;font-weight:600;color:var(--green);text-decoration:none;background:#fff;
   transition:background .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
 .al-back svg{transition:transform .2s}
@@ -126,12 +126,12 @@ const css = `${font}
 
 /* ---------- small screens ---------- */
 @media(max-width:900px){
-  .al{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-  .al-brand{padding:20px 24px}
+  .al{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .al-brand{padding:14px 24px}
   .al-seal,.al-copy,.al-foot{display:none}
   .al-badge{width:46px;height:46px}
-  .al-side{align-items:flex-start;padding:28px 18px 44px}
-  .al-card{min-height:0;padding:32px 24px 28px}
+  .al-side{padding:12px 18px 18px}
+  .al-card{padding:24px 22px 20px}
   .al-card::before{left:24px;right:24px}
   .al-head{display:none}
 }
